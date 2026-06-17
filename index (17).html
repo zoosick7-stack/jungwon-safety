@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="중원안전점검">
+<title>(주)중원이엔아이 안전점검</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;font-size:15px;}
+.co-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:white;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:100;}
+.logo-mark{width:36px;height:36px;border-radius:8px;background:#0F6E56;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;flex-shrink:0;}
+.co-name{font-size:14px;font-weight:600;}
+.co-sub{font-size:11px;color:#888;margin-top:1px;}
+.hbadge{font-size:11px;background:#E1F5EE;color:#0F6E56;padding:4px 10px;border-radius:12px;border:1px solid #5DCAA5;white-space:nowrap;}
+.tab-bar{display:flex;background:white;border-bottom:1px solid #e8e8e8;position:sticky;top:61px;z-index:99;}
+.tab{flex:1;padding:12px 8px;font-size:13px;text-align:center;cursor:pointer;color:#888;border-bottom:2px solid transparent;}
+.tab.active{color:#0F6E56;border-bottom:2px solid #1D9E75;font-weight:600;}
+.panel{display:none;padding:14px;min-height:100vh;}
+.panel.active{display:block;}
+
+.field-hd{background:#0F6E56;color:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.field-hd i{font-size:22px;}
+.field-hd h2{font-size:14px;font-weight:600;margin:0;}
+.field-hd p{font-size:11px;opacity:.8;margin:3px 0 0;}
+
+.sel-card{background:white;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.sel-card-title{font-size:12px;color:#666;margin-bottom:10px;font-weight:600;}
+.sel-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.sel-col label{display:block;font-size:11px;color:#888;margin-bottom:4px;padding-left:2px;}
+.sel-input{width:100%;padding:9px 8px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fafafa;color:#1a1a1a;appearance:none;-webkit-appearance:none;}
+.sel-input:focus{outline:none;border-color:#1D9E75;background:white;}
+.txt-input{width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fafafa;color:#1a1a1a;font-family:inherit;}
+.txt-input:focus{outline:none;border-color:#1D9E75;background:white;}
+.insp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f0f0f0;}
+.insp-col label{display:block;font-size:11px;color:#888;margin-bottom:4px;padding-left:2px;}
+
+/* 시설번호 입력+드롭다운 */
+.fac-wrap{position:relative;}
+.fac-input-row{display:flex;gap:6px;}
+.fac-add-btn{padding:9px 12px;background:#0F6E56;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.fac-add-btn:active{background:#0a5240;}
+.fac-hint{font-size:10px;color:#aaa;margin-top:4px;padding-left:2px;}
+
+.loc-sum{display:none;background:#E1F5EE;border:1px solid #5DCAA5;border-radius:8px;padding:9px 12px;font-size:12px;color:#0F6E56;margin-bottom:12px;align-items:center;gap:5px;flex-wrap:wrap;line-height:1.7;}
+.loc-sum.on{display:flex;}
+.lsep{color:#5DCAA5;}
+
+.chk-sec{background:white;border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.chk-title{font-size:13px;font-weight:600;color:#555;padding:11px 14px;background:#f9f9f9;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:7px;}
+.chk-title i{font-size:16px;color:#0F6E56;}
+.chk-body{padding:12px 14px;}
+.st-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;}
+.st-label{font-size:13px;color:#333;flex:1;line-height:1.4;}
+.st-btns{display:flex;gap:5px;flex-shrink:0;}
+.sbtn{padding:6px 11px;border-radius:20px;font-size:12px;border:1px solid #ddd;cursor:pointer;background:white;color:#888;white-space:nowrap;}
+.sbtn:active{transform:scale(.95);}
+.sbtn.ok.sel{background:#EAF3DE;color:#3B6D11;border-color:#639922;font-weight:600;}
+.sbtn.ng.sel{background:#FCEBEB;color:#A32D2D;border-color:#E24B4A;font-weight:600;}
+.sbtn.na.sel{background:#f5f5f5;color:#666;border-color:#aaa;font-weight:600;}
+
+.photo-zone{border:2px dashed #ddd;border-radius:10px;padding:16px;text-align:center;cursor:pointer;margin-top:12px;}
+.photo-zone:active{background:#f5f5f5;}
+.photo-zone i{font-size:28px;color:#bbb;}
+.photo-zone p{font-size:12px;color:#aaa;margin-top:6px;}
+.photo-thumb{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.tw{display:flex;flex-direction:column;gap:4px;align-items:center;}
+.thumb{width:72px;height:72px;border-radius:8px;border:1px solid #e0e0e0;overflow:hidden;position:relative;background:#f0f0f0;flex-shrink:0;}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.t-ok{position:absolute;bottom:3px;right:3px;background:#1D9E75;color:white;border-radius:50%;width:18px;height:18px;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.meta-tag{font-size:10px;background:#f0f0f0;border-radius:6px;padding:4px 6px;color:#666;line-height:1.5;width:72px;text-align:center;}
+
+.notes-area{width:100%;border:1px solid #ddd;border-radius:8px;padding:10px;font-size:13px;resize:none;height:80px;font-family:inherit;color:#1a1a1a;background:#fafafa;}
+.notes-area:focus{outline:none;border-color:#1D9E75;}
+
+.submit-btn{width:100%;padding:15px;background:#1D9E75;color:white;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.submit-btn:active{background:#0F6E56;}
+.footer-stamp{text-align:center;font-size:11px;color:#bbb;padding:20px 0 30px;}
+
+/* 비밀번호 */
+.pw-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;}
+.pw-ov.open{display:flex;}
+.pw-box{background:white;border-radius:20px;padding:32px 24px 24px;width:290px;text-align:center;}
+.pw-icon{font-size:44px;margin-bottom:12px;}
+.pw-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.pw-box p{font-size:13px;color:#888;margin-bottom:20px;}
+.pw-input{width:100%;padding:14px;border:1.5px solid #ddd;border-radius:10px;font-size:24px;text-align:center;letter-spacing:10px;margin-bottom:8px;font-family:inherit;}
+.pw-input:focus{outline:none;border-color:#1D9E75;}
+.pw-err{font-size:12px;color:#E24B4A;min-height:18px;margin-bottom:10px;}
+.pw-btn{width:100%;padding:13px;background:#1D9E75;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;}
+.pw-cancel{width:100%;padding:10px;background:none;color:#aaa;border:none;font-size:13px;cursor:pointer;margin-top:6px;}
+
+/* 본사 대시보드 빈 화면 */
+.hq-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;color:#aaa;}
+.hq-empty i{font-size:60px;margin-bottom:16px;color:#ddd;}
+.hq-empty h3{font-size:16px;font-weight:600;color:#bbb;margin-bottom:8px;}
+.hq-empty p{font-size:13px;line-height:1.6;}
+
+/* 모달 */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:flex-end;}
+.modal-bg.open{display:flex;}
+.modal{background:white;border-radius:20px 20px 0 0;padding:20px 16px 44px;width:100%;}
+.modal h3{font-size:16px;font-weight:600;margin-bottom:16px;text-align:center;}
+.modal-btn{width:100%;padding:14px;background:#f5f5f5;border:none;border-radius:10px;font-size:15px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:#1a1a1a;}
+.modal-btn:active{background:#e8e8e8;}
+.modal-btn.cancel{color:#E24B4A;background:#fff5f5;}
+input[type="file"]{display:none;}
+</style>
+</head>
+<body>
+
+<!-- 비밀번호 오버레이 -->
+<div class="pw-ov" id="pw-ov">
+  <div class="pw-box">
+    <div class="pw-icon">🔒</div>
+    <h3>본사 대시보드</h3>
+    <p>접근 비밀번호를 입력하세요</p>
+    <input class="pw-input" type="password" id="pw-input" maxlength="4" placeholder="····" inputmode="numeric">
+    <div class="pw-err" id="pw-err"></div>
+    <button class="pw-btn" onclick="checkPw()">확인</button>
+    <button class="pw-cancel" onclick="closePw()">취소</button>
+  </div>
+</div>
+
+<!-- 헤더 -->
+<div class="co-header">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="logo-mark">중원</div>
+    <div>
+      <div class="co-name">(주)중원이엔아이</div>
+      <div class="co-sub">방사선 시설 안전 점검</div>
+    </div>
+  </div>
+  <div class="hbadge">&#9762; 방사선 관리</div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('field')" id="tab-field">&#128247; 현장 점검</div>
+  <div class="tab" onclick="tryHQ()" id="tab-hq">&#128202; 본사 대시보드</div>
+</div>
+
+<!-- 현장 점검 -->
+<div class="panel active" id="panel-field">
+  <div class="field-hd">
+    <i class="ti ti-radiation"></i>
+    <div>
+      <h2>(주)중원이엔아이 — 방사선 시설 안전 점검</h2>
+      <p id="field-dt"></p>
+    </div>
+  </div>
+
+  <div class="sel-card">
+    <div class="sel-card-title">&#128205; 점검 위치 선택</div>
+    <div class="sel-row">
+      <div class="sel-col">
+        <label>출장소</label>
+        <select class="sel-input" id="sel-branch" onchange="onBranchChange()">
+          <option value="">선택</option>
+          <option value="본사">본사</option>
+          <option value="창원">창원</option>
+          <option value="울산">울산</option>
+          <option value="대구">대구</option>
+          <option value="진천">진천</option>
+          <option value="남부">남부</option>
+          <option value="여수">여수</option>
+          <option value="광양">광양</option>
+          <option value="울주">울주</option>
+          <option value="현대">현대</option>
+          <option value="군산">군산</option>
+          <option value="마산">마산</option>
+          <option value="사파">사파</option>
+          <option value="성산">성산</option>
+          <option value="성서">성서</option>
+          <option value="의창">의창</option>
+          <option value="일진">일진</option>
+          <option value="중부">중부</option>
+          <option value="칠서">칠서</option>
+          <option value="합안">합안</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+      <div class="sel-col">
+        <label>현장명</label>
+        <input class="txt-input" id="inp-site" type="text" placeholder="현장명 입력" oninput="updateSum()">
+      </div>
+      <div class="sel-col">
+        <label>시설 번호</label>
+        <select class="sel-input" id="sel-fac" onchange="updateSum()">
+          <option value="">선택</option>
+        </select>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+          <input class="txt-input" id="inp-fac-new" type="text" placeholder="직접 입력" style="font-size:12px;padding:6px 8px;">
+          <button class="fac-add-btn" onclick="addFacility()">추가</button>
+        </div>
+        <div class="fac-hint">입력 후 추가 → 드롭다운에 저장됨</div>
+      </div>
+    </div>
+    <div class="insp-row">
+      <div class="insp-col">
+        <label>&#128100; 점검자 이름</label>
+        <input class="txt-input" id="inp-insp" type="text" placeholder="홍길동" oninput="updateSum()">
+      </div>
+      <div class="insp-col">
+        <label>&#128203; 직책</label>
+        <input class="txt-input" id="inp-role" type="text" placeholder="안전관리원" oninput="saveRole()">
+      </div>
+    </div>
+  </div>
+
+  <div class="loc-sum" id="loc-sum">
+    &#10003; <span id="s-branch"></span><span class="lsep">›</span>
+    <span id="s-site"></span><span class="lsep">›</span>
+    <span id="s-fac"></span>
+    <span style="margin-left:6px;color:#5DCAA5;">|</span>
+    &#128100; <span id="s-insp"></span>
+  </div>
+
+  <!-- 카메라 -->
+  <div class="chk-sec">
+    <div class="chk-title"><i class="ti ti-camera"></i> 카메라 상태</div>
+    <div class="chk-body">
+      <div class="st-row"><span class="st-label">출입구 카메라 정상 작동</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="st-row"><span class="st-label">내부 감시 카메라 정상 작동</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="photo-zone" onclick="doCamera('cam')"><i class="ti ti-camera-plus"></i><p>사진 촬영</p></div>
+      <div class="photo-thumb" id="pt-cam"></div>
+    </div>
+  </div>
+
+  <!-- 경광등 -->
+  <div class="chk-sec">
+    <div class="chk-title"><i class="ti ti-alert-triangle"></i> 경광등 상태</div>
+    <div class="chk-body">
+      <div class="st-row"><span class="st-label">경광등 점등 확인</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="photo-zone" onclick="doCamera('warn')"><i class="ti ti-camera-plus"></i><p>사진 촬영</p></div>
+      <div class="photo-thumb" id="pt-warn"></div>
+    </div>
+  </div>
+
+  <!-- 문열림 -->
+  <div class="chk-sec">
+    <div class="chk-title"><i class="ti ti-door-enter"></i> 문열림 알림</div>
+    <div class="chk-body">
+      <div class="st-row"><span class="st-label">문열림 센서 앱 알림 정상</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="photo-zone" onclick="doCamera('door')"><i class="ti ti-camera-plus"></i><p>사진 촬영</p></div>
+      <div class="photo-thumb" id="pt-door"></div>
+    </div>
+  </div>
+
+  <!-- 차폐 -->
+  <div class="chk-sec">
+    <div class="chk-title"><i class="ti ti-lock"></i> 차폐 닫힘 상태</div>
+    <div class="chk-body">
+      <div class="st-row"><span class="st-label">방사선 차폐 완전 닫힘</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="st-row"><span class="st-label">인터록 장치 작동 정상</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="photo-zone" onclick="doCamera('shield')"><i class="ti ti-camera-plus"></i><p>사진 촬영</p></div>
+      <div class="photo-thumb" id="pt-shield"></div>
+    </div>
+  </div>
+
+  <!-- 산업안전 -->
+  <div class="chk-sec">
+    <div class="chk-title"><i class="ti ti-shield-check"></i> 산업 안전 관리</div>
+    <div class="chk-body">
+      <div class="st-row"><span class="st-label">안전 표지판 부착 상태</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="st-row"><span class="st-label">개인 보호 장구 구비</span><div class="st-btns"><div class="sbtn ok" onclick="setSt(this)">정상</div><div class="sbtn ng" onclick="setSt(this)">이상</div><div class="sbtn na" onclick="setSt(this)">해당없음</div></div></div>
+      <div class="photo-zone" onclick="doCamera('ind')"><i class="ti ti-camera-plus"></i><p>사진 촬영</p></div>
+      <div class="photo-thumb" id="pt-ind"></div>
+    </div>
+  </div>
+
+  <!-- 기타 -->
+  <div class="chk-sec">
+    <div class="chk-title"><i class="ti ti-pencil"></i> 기타 자유 입력</div>
+    <div class="chk-body">
+      <textarea class="notes-area" id="notes" placeholder="특이사항, 추가 점검 내용을 자유롭게 입력하세요..."></textarea>
+    </div>
+  </div>
+
+  <div style="background:#E8F4FD;border:1px solid #90CAF9;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:13px;color:#1565C0;line-height:1.8;">
+    &#128161; <strong>사용 방법</strong><br>
+    ① <strong>결과 이미지 저장</strong> 버튼 클릭<br>
+    ② 폰 갤러리에 JPG로 자동 저장<br>
+    ③ 갤러리에서 카카오톡 / 이메일로 전송
+  </div>
+  <button id="emailjs-btn" class="submit-btn" onclick="sendEmailJS()" style="background:#1D9E75;margin-top:10px;">
+    &#128231; 점검 결과 자동 전송
+  </button>
+  <button class="submit-btn" onclick="saveAsJPG()" style="background:#1D4E9E;margin-top:10px;">
+    &#128247; 결과 이미지 저장 (JPG)
+  </button>
+  <div id="share-btn-wrap" style="display:none;margin-top:10px;">
+  </div>
+  <div class="footer-stamp">ⓒ (주)중원이엔아이 · 방사선 시설 안전 관리 시스템</div>
+</div>
+
+<!-- 본사 대시보드 (비어있음) -->
+<div class="panel" id="panel-hq">
+  <div style="padding:4px 0 16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <h2 style="font-size:16px;font-weight:600;">&#128202; 본사 설정</h2>
+        <div style="font-size:12px;color:#888;margin-top:3px;">(주)중원이엔아이 · 안전관리부</div>
+      </div>
+    </div>
+
+    <!-- 이메일 수신자 관리 -->
+    <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:14px;display:flex;align-items:center;gap:6px;">
+        &#9993; 점검 결과 수신 이메일 관리
+      </div>
+      <div id="email-list"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <input class="txt-input" id="inp-new-email" type="email" placeholder="이메일 주소 입력" style="flex:1;">
+        <button onclick="addEmail()" style="padding:9px 14px;background:#0F6E56;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">추가</button>
+      </div>
+      <div style="font-size:11px;color:#aaa;margin-top:8px;">&#8251; 추가한 이메일로 점검 결과가 자동 전송됩니다</div>
+    </div>
+
+    <!-- 안내 -->
+    <div style="background:#E1F5EE;border:1px solid #5DCAA5;border-radius:12px;padding:16px;">
+      <div style="font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:8px;">&#128161; 사용 방법</div>
+      <div style="font-size:12px;color:#0F6E56;line-height:1.8;">
+        1. 수신할 이메일 주소를 추가하세요<br>
+        2. 현장에서 점검 완료 후 이메일 전송 버튼 클릭<br>
+        3. 등록된 모든 이메일로 자동 발송됩니다<br>
+        4. 이메일 주소는 최대 5개까지 등록 가능합니다
+      </div>
+    </div>
+  </div>
+  <div class="footer-stamp">ⓒ (주)중원이엔아이 · 방사선 시설 안전 관리 시스템</div>
+</div>
+
+<!-- 카메라 입력 (zone별) -->
+<input type="file" id="fc-cam" accept="image/*" capture="environment" onchange="handlePhoto(event,'cam')">
+<input type="file" id="fc-warn" accept="image/*" capture="environment" onchange="handlePhoto(event,'warn')">
+<input type="file" id="fc-door" accept="image/*" capture="environment" onchange="handlePhoto(event,'door')">
+<input type="file" id="fc-shield" accept="image/*" capture="environment" onchange="handlePhoto(event,'shield')">
+<input type="file" id="fc-ind" accept="image/*" capture="environment" onchange="handlePhoto(event,'ind')">
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+var curZone=null;
+var hqOk=false;
+var EMAILJS_SERVICE='service_rcyvawi';
+var EMAILJS_TEMPLATE='template_t1q5o6b';
+var EMAILJS_KEY='S5YpDlMg3e-XR6WZm';
+
+// EmailJS 초기화
+emailjs.init(EMAILJS_KEY);
+var TO_EMAIL='joachim8@naver.com';
+var capturedPhotos={}; // zone별 사진 base64 저장
+
+function pad(n){return String(n).padStart(2,'0');}
+
+function saveAsImage(){
+  var branch=document.getElementById('sel-branch').value;
+  var site=document.getElementById('inp-site').value.trim();
+  var fac=document.getElementById('sel-fac').value;
+  var insp=document.getElementById('inp-insp').value.trim();
+  var role=document.getElementById('inp-role').value.trim();
+  var notes=document.getElementById('notes').value.trim();
+
+  if(!branch){alert('출장소를 선택해 주세요.');return;}
+  if(!insp){alert('점검자 이름을 입력해 주세요.');return;}
+
+  var now=new Date();
+  var ds=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
+
+  var camRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(4) .st-row');
+  var warnRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(5) .st-row');
+  var doorRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(6) .st-row');
+  var shieldRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(7) .st-row');
+  var indRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(8) .st-row');
+
+  var items=[
+    {label:'출입구 카메라',val:getRowStatus(camRows,0)},
+    {label:'내부 감시 카메라',val:getRowStatus(camRows,1)},
+    {label:'경광등 상태',val:getRowStatus(warnRows,0)},
+    {label:'문열림 알림',val:getRowStatus(doorRows,0)},
+    {label:'방사선 차폐 닫힘',val:getRowStatus(shieldRows,0)},
+    {label:'인터록 장치',val:getRowStatus(shieldRows,1)},
+    {label:'안전 표지판',val:getRowStatus(indRows,0)},
+    {label:'개인 보호 장구',val:getRowStatus(indRows,1)},
+  ];
+
+  // Canvas 생성
+  var W=800, H=1100;
+  var canvas=document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  var ctx=canvas.getContext('2d');
+
+  // 배경
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,W,H);
+
+  // 헤더
+  ctx.fillStyle='#0F6E56';
+  ctx.fillRect(0,0,W,80);
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 20px sans-serif';
+  ctx.fillText('(주)중원이엔아이 방사선 시설 안전 점검',20,35);
+  ctx.font='13px sans-serif';
+  ctx.fillText('Radiation Safety Inspection Report',20,58);
+  ctx.font='13px sans-serif';
+  ctx.textAlign='right';
+  ctx.fillText(ds+' '+ts,W-20,45);
+  ctx.textAlign='left';
+
+  // 점검 정보 박스
+  ctx.fillStyle='#f0f7f4';
+  ctx.fillRect(0,80,W,90);
+  ctx.fillStyle='#333';
+  ctx.font='13px sans-serif';
+  ctx.fillText('출장소: '+branch,20,108);
+  ctx.fillText('현장명: '+(site||'-'),220,108);
+  ctx.fillText('시설번호: '+(fac||'-'),500,108);
+  ctx.fillText('점검자: '+insp+(role?' ('+role+')':''),20,138);
+  ctx.fillText('점검일시: '+ds+' '+ts,300,138);
+
+  // 구분선
+  ctx.strokeStyle='#ddd';
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(0,170);
+  ctx.lineTo(W,170);
+  ctx.stroke();
+
+  // 점검결과 제목
+  ctx.fillStyle='#0F6E56';
+  ctx.font='bold 15px sans-serif';
+  ctx.fillText('점검 결과',20,200);
+
+  // 결과 항목
+  var y=220;
+  items.forEach(function(item,i){
+    if(i%2===0) ctx.fillStyle='#f9f9f9';
+    else ctx.fillStyle='#ffffff';
+    ctx.fillRect(0,y,W,36);
+
+    ctx.fillStyle='#333';
+    ctx.font='13px sans-serif';
+    ctx.fillText(item.label,20,y+23);
+
+    // 상태 뱃지
+    var badgeX=600;
+    if(item.val==='정상'){
+      ctx.fillStyle='#EAF3DE';
+      ctx.beginPath();
+      ctx.roundRect(badgeX,y+8,80,20,10);
+      ctx.fill();
+      ctx.fillStyle='#3B6D11';
+    } else if(item.val==='이상'){
+      ctx.fillStyle='#FCEBEB';
+      ctx.beginPath();
+      ctx.roundRect(badgeX,y+8,80,20,10);
+      ctx.fill();
+      ctx.fillStyle='#A32D2D';
+    } else {
+      ctx.fillStyle='#f0f0f0';
+      ctx.beginPath();
+      ctx.roundRect(badgeX,y+8,80,20,10);
+      ctx.fill();
+      ctx.fillStyle='#666';
+    }
+    ctx.font='bold 12px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText(item.val||'미선택',badgeX+40,y+22);
+    ctx.textAlign='left';
+    y+=36;
+  });
+
+  // 특이사항
+  y+=10;
+  ctx.fillStyle='#0F6E56';
+  ctx.font='bold 15px sans-serif';
+  ctx.fillText('특이사항',20,y);
+  y+=20;
+  ctx.fillStyle='#fff8e1';
+  ctx.fillRect(0,y,W,60);
+  ctx.fillStyle='#333';
+  ctx.font='13px sans-serif';
+  ctx.fillText(notes||'없음',20,y+25);
+
+  // 사진 섹션
+  y+=80;
+  ctx.fillStyle='#0F6E56';
+  ctx.font='bold 15px sans-serif';
+  ctx.fillText('현장 사진',20,y);
+  y+=15;
+
+  var zones=['cam','warn','door','shield','ind'];
+  var photoX=20, photoY=y, photoSize=120, gap=10;
+  var photoCount=0;
+  var photoPromises=[];
+
+  zones.forEach(function(zone){
+    var imgs=document.querySelectorAll('#pt-'+zone+' img');
+    imgs.forEach(function(img){
+      if(photoCount>=8) return;
+      var px=photoX+(photoCount%4)*(photoSize+gap);
+      var py=photoY+Math.floor(photoCount/4)*(photoSize+gap+20);
+      photoPromises.push(new Promise(function(resolve){
+        var image=new Image();
+        image.onload=function(){
+          ctx.drawImage(image,px,py,photoSize,photoSize);
+          // 날짜/장소 텍스트
+          ctx.fillStyle='rgba(0,0,0,0.6)';
+          ctx.fillRect(px,py+photoSize-22,photoSize,22);
+          ctx.fillStyle='#fff';
+          ctx.font='9px sans-serif';
+          ctx.fillText(ds+' '+branch,px+3,py+photoSize-11);
+          resolve();
+        };
+        image.onerror=resolve;
+        image.src=img.src;
+      }));
+      photoCount++;
+    });
+  });
+
+  // 서명란
+  Promise.all(photoPromises).then(function(){
+    var signY=H-100;
+    ctx.strokeStyle='#999';
+    ctx.lineWidth=0.5;
+    ctx.beginPath();ctx.moveTo(20,signY);ctx.lineTo(280,signY);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(320,signY);ctx.lineTo(580,signY);ctx.stroke();
+    ctx.fillStyle='#888';
+    ctx.font='11px sans-serif';
+    ctx.fillText('점검자 서명',20,signY+16);
+    ctx.fillText('관리자 서명',320,signY+16);
+
+    // 푸터
+    ctx.fillStyle='#f9f9f9';
+    ctx.fillRect(0,H-40,W,40);
+    ctx.fillStyle='#bbb';
+    ctx.font='10px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('ⓒ (주)중원이엔아이 · 방사선 시설 안전 관리 시스템 · '+ds,W/2,H-15);
+    ctx.textAlign='left';
+
+    // 저장
+    var fname='중원이엔아이_안전점검_'+branch+'_'+ds+'.png';
+    var a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png');
+    a.download=fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // 버튼 표시
+    var btn=document.querySelector('.submit-btn');
+    btn.innerHTML='✅ 이미지 저장 완료! 갤러리에서 확인하세요';
+    btn.style.background='#3B6D11';
+    setTimeout(function(){
+      btn.innerHTML='&#128247; 점검결과 이미지 저장';
+      btn.style.background='#1D4E9E';
+    },4000);
+  });
+}
+
+function saveAsJPG(){
+  var branch=document.getElementById('sel-branch').value;
+  var site=document.getElementById('inp-site').value.trim();
+  var fac=document.getElementById('sel-fac').value;
+  var insp=document.getElementById('inp-insp').value.trim();
+  var role=document.getElementById('inp-role').value.trim();
+  var notes=document.getElementById('notes').value.trim();
+
+  if(!branch){alert('출장소를 선택해 주세요.');return;}
+  if(!insp){alert('점검자 이름을 입력해 주세요.');return;}
+
+  var now=new Date();
+  var ds=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
+
+  var camRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(4) .st-row');
+  var warnRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(5) .st-row');
+  var doorRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(6) .st-row');
+  var shieldRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(7) .st-row');
+  var indRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(8) .st-row');
+
+  function st(rows,idx){
+    var s=rows[idx]?rows[idx].querySelector('.sbtn.sel'):null;
+    return s?s.textContent:'미선택';
+  }
+  function badge(v){
+    if(v==='정상') return '<span style="background:#EAF3DE;color:#3B6D11;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">정상</span>';
+    if(v==='이상') return '<span style="background:#FCEBEB;color:#A32D2D;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">이상</span>';
+    return '<span style="background:#f0f0f0;color:#666;padding:2px 8px;border-radius:10px;font-size:11px;">'+v+'</span>';
+  }
+
+  // 결과 요약 div 생성
+  var div=document.createElement('div');
+  div.style.cssText='position:fixed;left:-9999px;top:0;width:360px;background:white;font-family:-apple-system,sans-serif;';
+  div.innerHTML=
+    '<div style="background:#0F6E56;color:white;padding:14px 16px;">' +
+      '<div style="font-size:14px;font-weight:600;">(주)중원이엔아이</div>' +
+      '<div style="font-size:11px;opacity:.8;margin-top:2px;">방사선 시설 안전 점검 결과</div>' +
+    '</div>' +
+    '<div style="background:#f0f7f4;padding:10px 16px;border-bottom:1px solid #cde8dc;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">' +
+        '<div style="font-size:11px;"><span style="color:#666;">일시</span> <strong>'+ds+' '+ts+'</strong></div>' +
+        '<div style="font-size:11px;"><span style="color:#666;">출장소</span> <strong>'+branch+'</strong></div>' +
+        '<div style="font-size:11px;"><span style="color:#666;">현장</span> <strong>'+(site||'-')+'</strong></div>' +
+        '<div style="font-size:11px;"><span style="color:#666;">시설</span> <strong>'+(fac||'-')+'</strong></div>' +
+        '<div style="font-size:11px;grid-column:1/-1;"><span style="color:#666;">점검자</span> <strong>'+insp+(role?' ('+role+')':'')+'</strong></div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="padding:10px 16px;">' +
+      '<div style="font-size:11px;font-weight:600;color:#0F6E56;border-bottom:1px solid #0F6E56;padding-bottom:3px;margin-bottom:6px;">점검 결과</div>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:11px;">' +
+        '<tr style="background:#f9f9f9;"><td style="padding:5px 6px;color:#555;">출입구 카메라</td><td style="padding:5px 6px;text-align:right;">'+badge(st(camRows,0))+'</td></tr>' +
+        '<tr><td style="padding:5px 6px;color:#555;">내부 감시 카메라</td><td style="padding:5px 6px;text-align:right;">'+badge(st(camRows,1))+'</td></tr>' +
+        '<tr style="background:#f9f9f9;"><td style="padding:5px 6px;color:#555;">경광등 상태</td><td style="padding:5px 6px;text-align:right;">'+badge(st(warnRows,0))+'</td></tr>' +
+        '<tr><td style="padding:5px 6px;color:#555;">문열림 알림</td><td style="padding:5px 6px;text-align:right;">'+badge(st(doorRows,0))+'</td></tr>' +
+        '<tr style="background:#f9f9f9;"><td style="padding:5px 6px;color:#555;">차폐 닫힘</td><td style="padding:5px 6px;text-align:right;">'+badge(st(shieldRows,0))+'</td></tr>' +
+        '<tr><td style="padding:5px 6px;color:#555;">인터록 장치</td><td style="padding:5px 6px;text-align:right;">'+badge(st(shieldRows,1))+'</td></tr>' +
+        '<tr style="background:#f9f9f9;"><td style="padding:5px 6px;color:#555;">안전 표지판</td><td style="padding:5px 6px;text-align:right;">'+badge(st(indRows,0))+'</td></tr>' +
+        '<tr><td style="padding:5px 6px;color:#555;">보호 장구</td><td style="padding:5px 6px;text-align:right;">'+badge(st(indRows,1))+'</td></tr>' +
+      '</table>' +
+    '</div>' +
+    (notes?'<div style="padding:0 16px 10px;"><div style="font-size:11px;font-weight:600;color:#0F6E56;margin-bottom:4px;">특이사항</div><div style="font-size:11px;background:#fff8e1;padding:8px;border-radius:6px;line-height:1.6;">'+notes+'</div></div>':'')+
+    '<div style="padding:8px 16px;background:#f9f9f9;font-size:9px;color:#aaa;text-align:center;">ⓒ (주)중원이엔아이 안전관리 시스템 · '+ds+'</div>';
+
+  document.body.appendChild(div);
+
+  var btn=document.querySelectorAll('.submit-btn')[2];
+  btn.innerHTML='⏳ 이미지 생성 중...';
+  btn.style.background='#888';
+  btn.disabled=true;
+
+  html2canvas(div,{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(function(canvas){
+    document.body.removeChild(div);
+    var fname='중원이엔아이_안전점검_'+branch+'_'+ds+'.jpg';
+    var dataUrl=canvas.toDataURL('image/jpeg',0.95);
+
+    // 공유 지원시 바로 공유
+    canvas.toBlob(function(blob){
+      var file=new File([blob],fname,{type:'image/jpeg'});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({
+          title:'(주)중원이엔아이 안전점검 결과',
+          files:[file]
+        }).catch(function(){downloadJPG(dataUrl,fname);});
+      } else {
+        downloadJPG(dataUrl,fname);
+      }
+    },'image/jpeg',0.95);
+
+    btn.innerHTML='✅ 이미지 저장 완료!';
+    btn.style.background='#3B6D11';
+    btn.disabled=false;
+    setTimeout(function(){
+      btn.innerHTML='&#128247; 결과 이미지 저장 (JPG)';
+      btn.style.background='#1D4E9E';
+    },3000);
+  }).catch(function(e){
+    document.body.removeChild(div);
+    btn.innerHTML='❌ 실패 — 다시 시도';
+    btn.style.background='#A32D2D';
+    btn.disabled=false;
+  });
+}
+
+function downloadJPG(dataUrl,fname){
+  var a=document.createElement('a');
+  a.href=dataUrl;
+  a.download=fname;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  alert('이미지 저장 완료!\n파일명: '+fname+'\n\n갤러리 또는 다운로드 폴더에서 확인하세요.');
+}
+
+function savePDF(){
+  var branch=document.getElementById('sel-branch').value;
+  var site=document.getElementById('inp-site').value.trim();
+  var fac=document.getElementById('sel-fac').value;
+  var insp=document.getElementById('inp-insp').value.trim();
+  var role=document.getElementById('inp-role').value.trim();
+  var notes=document.getElementById('notes').value.trim();
+  if(!branch){alert('출장소를 선택해 주세요.');return;}
+  if(!insp){alert('점검자 이름을 입력해 주세요.');return;}
+
+  var now=new Date();
+  var ds=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
+
+  var camRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(4) .st-row');
+  var warnRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(5) .st-row');
+  var doorRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(6) .st-row');
+  var shieldRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(7) .st-row');
+  var indRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(8) .st-row');
+
+  var {jsPDF} = window.jspdf;
+  var doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+
+  // 폰트 설정 (기본 폰트로 영문 표기)
+  var margin=15;
+  var y=20;
+  var pw=210-margin*2;
+
+  // 헤더
+  doc.setFillColor(15,110,86);
+  doc.rect(0,0,210,30,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(14);
+  doc.text('(주)Jungwon ENI - Radiation Safety Inspection',margin,13);
+  doc.setFontSize(9);
+  doc.text('www.jungwon-eni.com',margin,21);
+  y=38;
+
+  // 점검 정보
+  doc.setTextColor(30,30,30);
+  doc.setFillColor(240,248,244);
+  doc.rect(margin,y-5,pw,28,'F');
+  doc.setFontSize(10);
+  doc.setFont(undefined,'bold');
+  doc.text('Inspection Info',margin+3,y+2);
+  doc.setFont(undefined,'normal');
+  doc.setFontSize(9);
+  doc.text('Date/Time : '+ds+' '+ts, margin+3, y+9);
+  doc.text('Branch : '+branch+'  Site : '+(site||'-')+'  Facility : '+(fac||'-'), margin+3, y+16);
+  doc.text('Inspector : '+insp+(role?' ('+role+')':''), margin+3, y+23);
+  y+=35;
+
+  // 점검 결과 테이블
+  doc.setFontSize(10);
+  doc.setFont(undefined,'bold');
+  doc.setTextColor(15,110,86);
+  doc.text('Inspection Results', margin, y);
+  y+=5;
+
+  var items=[
+    ['Camera','Entrance Camera', getRowStatus(camRows,0)],
+    ['Camera','Internal Camera', getRowStatus(camRows,1)],
+    ['Warning Light','Warning Light Status', getRowStatus(warnRows,0)],
+    ['Door','Door Open Alert', getRowStatus(doorRows,0)],
+    ['Shield','Shield Closed', getRowStatus(shieldRows,0)],
+    ['Shield','Interlock Device', getRowStatus(shieldRows,1)],
+    ['Safety','Safety Signs', getRowStatus(indRows,0)],
+    ['Safety','Protective Equipment', getRowStatus(indRows,1)],
+  ];
+
+  doc.setFont(undefined,'normal');
+  doc.setFontSize(9);
+  items.forEach(function(item,i){
+    var bg = i%2===0?[250,250,250]:[255,255,255];
+    doc.setFillColor(bg[0],bg[1],bg[2]);
+    doc.rect(margin,y,pw,8,'F');
+    doc.setTextColor(80,80,80);
+    doc.text('['+item[0]+']',margin+2,y+5.5);
+    doc.setTextColor(30,30,30);
+    doc.text(item[1],margin+28,y+5.5);
+    var st=item[2];
+    if(st==='정상'||st==='Normal'){doc.setTextColor(15,110,86);}
+    else if(st==='이상'||st==='Abnormal'){doc.setTextColor(163,45,45);}
+    else{doc.setTextColor(120,120,120);}
+    doc.text(st===''?'-':st,margin+pw-25,y+5.5);
+    doc.setTextColor(30,30,30);
+    y+=8;
+  });
+  y+=5;
+
+  // 특이사항
+  doc.setFillColor(255,248,230);
+  doc.rect(margin,y,pw,18,'F');
+  doc.setFont(undefined,'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(30,30,30);
+  doc.text('Notes :', margin+3, y+6);
+  doc.setFont(undefined,'normal');
+  var notesText = notes||'None';
+  doc.text(notesText.substring(0,80), margin+3, y+13);
+  y+=24;
+
+  // 사진 삽입
+  var zones=['cam','warn','door','shield','ind'];
+  var zoneNames=['Camera','Warning Light','Door','Shield','Safety'];
+  var photoAdded=false;
+
+  zones.forEach(function(zone,zi){
+    var imgs=document.querySelectorAll('#pt-'+zone+' img');
+    if(imgs.length>0){
+      if(!photoAdded){
+        doc.setFont(undefined,'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(15,110,86);
+        doc.text('Photos', margin, y);
+        y+=6;
+        photoAdded=true;
+      }
+      doc.setFont(undefined,'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(80,80,80);
+      doc.text('['+zoneNames[zi]+']', margin, y+4);
+      y+=6;
+      var x=margin;
+      imgs.forEach(function(img,ii){
+        if(y>250){doc.addPage();y=20;}
+        try{
+          doc.addImage(img.src,'JPEG',x,y,40,40);
+          // 날짜/장소 텍스트
+          doc.setFontSize(6);
+          doc.setTextColor(255,255,255);
+          doc.setFillColor(0,0,0);
+          doc.rect(x,y+32,40,8,'F');
+          doc.text(ds+' '+ts, x+1, y+36);
+          doc.text(branch+(site?' '+site:'')+(fac?' '+fac:''), x+1, y+40);
+          doc.setTextColor(30,30,30);
+        }catch(e){}
+        x+=44;
+        if(x>170){x=margin;y+=48;}
+      });
+      if(x>margin) y+=48;
+    }
+  });
+
+  // 서명란
+  if(y>250){doc.addPage();y=20;}
+  y+=5;
+  doc.setDrawColor(200,200,200);
+  doc.line(margin,y,margin+60,y);
+  doc.line(margin+80,y,margin+140,y);
+  doc.setFontSize(8);
+  doc.setTextColor(120,120,120);
+  doc.text('Inspector Signature',margin+5,y+5);
+  doc.text('Manager Signature',margin+85,y+5);
+
+  // 푸터
+  doc.setFontSize(7);
+  doc.setTextColor(180,180,180);
+  doc.text('(c) Jungwon ENI Safety Management System | '+ds, margin, 290);
+
+  // PDF Blob 생성
+  var pdfBlob = doc.output('blob');
+  var fname = '중원이엔아이_안전점검_'+branch+'_'+ds+'.pdf';
+
+  // blob URL 저장
+  if(window._pdfBlobUrl) URL.revokeObjectURL(window._pdfBlobUrl);
+  window._pdfBlobUrl = URL.createObjectURL(pdfBlob);
+  window._pdfBlob = pdfBlob;
+  window._pdfFname = fname;
+
+  // 버튼 표시
+  var btns=document.querySelectorAll('.submit-btn');
+  btns[1].innerHTML='✅ PDF 생성 완료';
+  btns[1].style.background='#0a3d7a';
+
+  // 공유 버튼 표시
+  var shareWrap = document.getElementById('share-btn-wrap');
+  shareWrap.style.display='block';
+  shareWrap.querySelector('.share-fname').textContent = fname;
+
+  setTimeout(function(){
+    btns[1].innerHTML='<i class="ti ti-file-type-pdf"></i> PDF 저장';
+    btns[1].style.background='#1D4E9E';
+  },3000);
+
+  // 바로 공유 팝업 실행
+  setTimeout(function(){
+    sharePDF();
+  },500);
+}
+
+function sharePDF(){
+  if(!window._pdfBlob){alert('먼저 PDF 저장 버튼을 눌러주세요.');return;}
+
+  var file=new File([window._pdfBlob],window._pdfFname,{type:'application/pdf'});
+
+  if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+    navigator.share({
+      title:'(주)중원이엔아이 안전점검 결과',
+      files:[file]
+    }).catch(function(e){
+      if(e.name!=='AbortError') downloadPDF();
+    });
+  } else {
+    downloadPDF();
+  }
+}
+
+function downloadPDF(){
+  var a=document.createElement('a');
+  a.href=window._pdfBlobUrl;
+  a.download=window._pdfFname;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  alert('PDF 다운로드 완료!\n파일명: '+window._pdfFname+'\n\n내 파일 → 다운로드 폴더에서 확인하세요.');
+}
+
+
+function sendEmailJS(){
+  var branch=document.getElementById('sel-branch').value;
+  var site=document.getElementById('inp-site').value.trim();
+  var fac=document.getElementById('sel-fac').value;
+  var insp=document.getElementById('inp-insp').value.trim();
+  var role=document.getElementById('inp-role').value.trim();
+  var notes=document.getElementById('notes').value.trim();
+
+  if(!branch){alert('출장소를 선택해 주세요.');return;}
+  if(!insp){alert('점검자 이름을 입력해 주세요.');return;}
+
+  var now=new Date();
+  var ds=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
+
+  var camRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(4) .st-row');
+  var warnRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(5) .st-row');
+  var doorRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(6) .st-row');
+  var shieldRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(7) .st-row');
+  var indRows=document.querySelectorAll('#panel-field .chk-sec:nth-child(8) .st-row');
+
+  var params={
+    date: ds+' '+ts,
+    branch: branch,
+    site: site||'미입력',
+    fac: fac||'미선택',
+    inspector: insp+(role?' ('+role+')':''),
+    cam1: getRowStatus(camRows,0),
+    cam2: getRowStatus(camRows,1),
+    warn: getRowStatus(warnRows,0),
+    door: getRowStatus(doorRows,0),
+    shield1: getRowStatus(shieldRows,0),
+    shield2: getRowStatus(shieldRows,1),
+    safety1: getRowStatus(indRows,0),
+    safety2: getRowStatus(indRows,1),
+    notes: notes||'없음'
+  };
+
+  // 전송 버튼 로딩 표시
+  var btn=document.getElementById('emailjs-btn');
+  btn.innerHTML='&#9201; 전송 중...';
+  btn.style.background='#888';
+  btn.disabled=true;
+
+  emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params)
+    .then(function(){
+      btn.innerHTML='&#10003; 전송 완료!';
+      btn.style.background='#3B6D11';
+      btn.disabled=false;
+      setTimeout(function(){
+        btn.innerHTML='&#128231; 점검 결과 자동 전송';
+        btn.style.background='#1D9E75';
+      },3000);
+    })
+    .catch(function(err){
+      btn.innerHTML='&#10060; 전송 실패 — 다시 시도';
+      btn.style.background='#A32D2D';
+      btn.disabled=false;
+      console.error(err);
+    });
+}
+
+function getRowStatus(rows,idx){
+  var sel=rows[idx]?rows[idx].querySelector('.sbtn.sel'):null;
+  return sel?sel.textContent:'미선택';
+}
+
+
+window.addEventListener('load', function() {
+  // 저장된 값 불러오기
+  var b = localStorage.getItem('jw_branch');
+  if (b) document.getElementById('sel-branch').value = b;
+  var i = localStorage.getItem('jw_insp');
+  if (i) document.getElementById('inp-insp').value = i;
+  var r = localStorage.getItem('jw_role');
+  if (r) document.getElementById('inp-role').value = r;
+
+  // 이메일 목록 렌더링 (기본값 설정)
+  var emails = JSON.parse(localStorage.getItem('jw_emails') || '[]');
+  if(emails.length === 0){
+    emails = ['joachim8@naver.com'];
+    localStorage.setItem('jw_emails', JSON.stringify(emails));
+  }
+  renderEmailList();
+  loadFacilities();
+  updateSum();
+
+  var now = new Date();
+  var days=['일','월','화','수','목','금','토'];
+  var ds=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var h=pad(now.getHours()),m=pad(now.getMinutes());
+  var ap=now.getHours()<12?'오전':'오후';
+  document.getElementById('field-dt').textContent=ds+' ('+days[now.getDay()]+')  ·  '+ap+' '+h+':'+m;
+});
+
+function loadFacilities() {
+  var saved = JSON.parse(localStorage.getItem('jw_facilities') || '[]');
+  var sel = document.getElementById('sel-fac');
+  sel.innerHTML = '<option value="">선택</option>';
+  saved.forEach(function(f) {
+    var opt = document.createElement('option');
+    opt.value = f; opt.textContent = f;
+    sel.appendChild(opt);
+  });
+}
+
+function addFacility() {
+  var val = document.getElementById('inp-fac-new').value.trim();
+  if (!val) { alert('시설 번호를 입력해 주세요.'); return; }
+  var saved = JSON.parse(localStorage.getItem('jw_facilities') || '[]');
+  if (saved.indexOf(val) === -1) {
+    saved.push(val);
+    localStorage.setItem('jw_facilities', JSON.stringify(saved));
+  }
+  loadFacilities();
+  document.getElementById('sel-fac').value = val;
+  document.getElementById('inp-fac-new').value = '';
+  updateSum();
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function tryHQ(){
+  if(hqOk){
+    switchTab('hq');
+    renderEmailList();
+    return;
+  }
+  document.getElementById('pw-ov').classList.add('open');
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-err').textContent='';
+  setTimeout(function(){document.getElementById('pw-input').focus();},150);
+}
+
+function checkPw(){
+  if(document.getElementById('pw-input').value==='1234'){
+    hqOk=true;
+    document.getElementById('pw-ov').classList.remove('open');
+    switchTab('hq');
+    renderEmailList();
+  } else {
+    document.getElementById('pw-err').textContent='비밀번호가 틀렸습니다';
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function closePw(){document.getElementById('pw-ov').classList.remove('open');}
+
+document.getElementById('pw-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw();});
+
+function onBranchChange(){
+  var b=document.getElementById('sel-branch').value;
+  if(b) localStorage.setItem('jw_branch',b);
+  updateSum();
+}
+
+function saveRole(){
+  var r=document.getElementById('inp-role').value.trim();
+  if(r) localStorage.setItem('jw_role',r);
+}
+
+function updateSum(){
+  var b=document.getElementById('sel-branch').value;
+  var s=document.getElementById('inp-site').value.trim();
+  var f=document.getElementById('sel-fac').value;
+  var i=document.getElementById('inp-insp').value.trim();
+  if(i) localStorage.setItem('jw_insp',i);
+  var el=document.getElementById('loc-sum');
+  if(b){
+    document.getElementById('s-branch').textContent=b;
+    document.getElementById('s-site').textContent=s||'(현장명 미입력)';
+    document.getElementById('s-fac').textContent=f||'(시설 미선택)';
+    document.getElementById('s-insp').textContent=i||'(점검자 미입력)';
+    el.classList.add('on');
+  } else {
+    el.classList.remove('on');
+  }
+}
+
+function setSt(btn){
+  btn.parentElement.querySelectorAll('.sbtn').forEach(function(s){s.classList.remove('sel');});
+  btn.classList.add('sel');
+}
+
+function getStatus(container){
+  var sel=container.querySelector('.sbtn.sel');
+  return sel?sel.textContent:'미선택';
+}
+
+function doCamera(zone){
+  curZone=zone;
+  document.getElementById('fc-'+zone).click();
+}
+
+function addEmail(){
+  var val=document.getElementById('inp-new-email').value.trim();
+  if(!val||!val.includes('@')){alert('올바른 이메일 주소를 입력해 주세요.');return;}
+  var emails=JSON.parse(localStorage.getItem('jw_emails')||'[]');
+  if(emails.length>=5){alert('최대 5개까지 등록 가능합니다.');return;}
+  if(emails.indexOf(val)!==-1){alert('이미 등록된 이메일입니다.');return;}
+  emails.push(val);
+  localStorage.setItem('jw_emails',JSON.stringify(emails));
+  document.getElementById('inp-new-email').value='';
+  renderEmailList();
+}
+
+function deleteEmail(idx){
+  var emails=JSON.parse(localStorage.getItem('jw_emails')||'[]');
+  emails.splice(idx,1);
+  localStorage.setItem('jw_emails',JSON.stringify(emails));
+  renderEmailList();
+}
+
+function renderEmailList(){
+  var emails=JSON.parse(localStorage.getItem('jw_emails')||'[]');
+  var el=document.getElementById('email-list');
+  if(!el)return;
+  if(emails.length===0){
+    el.innerHTML='<div style="font-size:12px;color:#bbb;text-align:center;padding:12px;">등록된 이메일이 없습니다</div>';
+    return;
+  }
+  el.innerHTML=emails.map(function(e,i){
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f9f9f9;border-radius:8px;margin-bottom:8px;">'+
+      '<div style="display:flex;align-items:center;gap:8px;">'+
+      '<span style="font-size:16px;">&#9993;</span>'+
+      '<span style="font-size:13px;">'+e+'</span></div>'+
+      '<button onclick="deleteEmail('+i+')" style="background:#FCEBEB;color:#A32D2D;border:none;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;">삭제</button>'+
+      '</div>';
+  }).join('');
+}
+
+function handlePhoto(e,zone){
+  var files=e.target.files;
+  if(!files||!files.length)return;
+  var container=document.getElementById('pt-'+zone);
+  var now=new Date();
+  var b=document.getElementById('sel-branch').value||'';
+  var s=document.getElementById('inp-site').value.trim()||'';
+  var f=document.getElementById('sel-fac').value||'';
+  var loc=[b,s,f].filter(Boolean).join(' › ')||'위치 미선택';
+  var ds=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
+  Array.from(files).forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var wrap=document.createElement('div');wrap.className='tw';
+      var thumb=document.createElement('div');thumb.className='thumb';
+      var img=document.createElement('img');img.src=ev.target.result;
+      var ok=document.createElement('div');ok.className='t-ok';ok.textContent='✓';
+      thumb.appendChild(img);thumb.appendChild(ok);
+      var meta=document.createElement('div');meta.className='meta-tag';
+      meta.innerHTML=ds+'<br>'+ts+'<br>'+loc;
+      wrap.appendChild(thumb);wrap.appendChild(meta);
+      container.appendChild(wrap);
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value='';
+}
+
+
+</script>
+</body>
+</html>
